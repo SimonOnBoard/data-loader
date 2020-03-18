@@ -21,7 +21,7 @@ public class DataBaseTransformer {
         try {
             Connection connection = DriverManager.getConnection("jdbc:postgresql://database-1.cdm5bcwbgp5i.us-east-1.rds.amazonaws.com:5432/tweet_db", "postgres", "12345123");
             LocalDateTime localDateTime = LocalDateTime.now();
-            int day = localDateTime.getDayOfMonth();
+            int day = localDateTime.getDayOfMonth() - 1;
             int month = localDateTime.getMonth().getValue();
             Map<Integer, String> months = new HashMap<>();
             months.put(1, "Jan");
@@ -39,7 +39,7 @@ public class DataBaseTransformer {
             String sql = "SELECT text from tweets_2 where day = ? and month = ? order by tweet_id DESC";
 
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, "" + day);
+            statement.setString(1, "" + 15);
             statement.setString(2, months.get(month));
             ResultSet resultSet = statement.executeQuery();
             Integer i = 0;
@@ -57,7 +57,7 @@ public class DataBaseTransformer {
                             sb.append(words[k].charAt(j));
                         }
                     }
-                    if(sb.length() != 0) {
+                    if (sb.length() != 0) {
                         strings.add(sb.toString());
                     }
                 }
@@ -67,7 +67,7 @@ public class DataBaseTransformer {
             processData();
             String name = "tweets_last_version";
             //language=sql
-            String monthDay = localDateTime.getMonth().getValue() + "_" + (localDateTime.getDayOfMonth());
+            String monthDay = localDateTime.getMonth().getValue() + "_" + (15);
             sql = "CREATE TABLE IF NOT EXISTS " + name + " (word varchar, count int, month_day varchar);";
             System.out.println(sql);
             statement = connection.prepareStatement(sql);
